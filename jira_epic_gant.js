@@ -2,6 +2,7 @@ function doItNow() {
 window.by_epic = {};
 window.by_sprint = {};
 window.all_sprints = [];
+window.epic_colors = {};
 
 $('.js-sprint-container').each(
   function() {
@@ -14,6 +15,7 @@ $('.js-sprint-container').each(
     $sprint.find('.ghx-label-single').each(
       function() {
         var epic_name = $(this).html();
+        window.epic_colors[epic_name] = $(this).css('background-color');
         if(epic_name) {
           if (!window.by_epic[epic_name]) {
             window.by_epic[epic_name] = {};
@@ -33,7 +35,7 @@ $('.js-sprint-container').each(
 );
 
 function buildEpicTable(epics, sprints, epics_by_sprint) {
-  var html = "<table border=1 cellpadding=3 cellspacing=0>";
+  var html = "<table border=1 cellpadding=10 cellspacing=0>";
   html += "<tr><td>epic</td>";
   for (var i in sprints) {
     html += "<td>" + sprints[i] + "</td>";
@@ -44,7 +46,7 @@ function buildEpicTable(epics, sprints, epics_by_sprint) {
     for (var i in sprints) {
       var sprint_name = sprints[i];
 	  if (epics_by_sprint[sprint_name][epic_name]) {
-        html += "<td style='background-color:green;'>" + "&nbsp;" + "</td>";
+        html += "<td style='background-color:" + window.epic_colors[epic_name] + ";'>" + "&nbsp;" + "</td>";
 	  } else {
         html += "<td>" + "&nbsp" + "</td>";
 	  }
