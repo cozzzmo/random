@@ -1,0 +1,212 @@
+<html>
+
+    <head>
+
+        <style>
+			.card {
+			  width: 100px;
+			  height: 135px;
+			  display: inline-block;
+			  background-size: 100px;
+			  background-image: url("http://images.penguinmagic.com/images/products/original/8007b.jpg");
+			}
+
+			.card img {
+			  height: 130px;
+			  width: 100px;
+			  display: none;
+			}
+
+			.ingame {
+			  display: none;
+			}
+
+			.card.show img {
+			  display: inline-block;
+			}
+
+			.card img.match {
+			  display: inline-block;
+			}
+        </style>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    </head>
+
+    <body>
+
+		<div class="pregame">
+		  <button class="shuffle">shuffle</button>
+		  <button class="start">start game</button>
+		</div>
+		<div class="ingame">
+		  <h2>num cards:<span class="num-cards"></span></h2>
+		  <h2>matches made:<span class="matches-made"></span></h2>
+		  <h2>matches remaining:<span class="matches-remaining"></span></h2>
+		  <button class="quit">Quit</button>
+		  <button class="new-game">New Game</button>
+		</div>
+		<div class="deck">
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		  <div class="card"><img class="" src=""></div>
+		</div>
+
+
+        <script>
+			var game_on = false;
+			var num_cards = $('.card').length;
+			var matches_made;
+			var matches_remaining;
+
+			$('.card').on('click', function(e) {
+					if (game_on && countNumCardsFlipped() > 1) {
+					return;
+				} 
+				flipOneCard($(this));
+					if (countNumCardsFlipped() == 2) {
+				  checkForMatch();
+				}
+			});
+
+			$('.shuffle').on('click', function(e) {
+				shuffleCards();
+			});
+
+			$('.quit').on('click', function(e) {
+				$('.ingame').hide();
+			  $('.pregame').show();
+			  turnAllCardsFaceUp();
+			});
+
+			$('.start, .new-game').on('click', function(e) {
+					$('.card img').removeClass('match');
+				shuffleCards();
+				turnAllCardsFaceDown();
+				$('.pregame').hide();
+				$('.num-cards').html(num_cards);
+				matches_made = 0;
+				matches_remaining = num_cards / 2;
+				updateDisplay();
+				$('.ingame').show();
+			});
+
+			function updateDisplay() {
+				$('.matches-made').html(matches_made);
+				$('.matches-remaining').html(matches_remaining);
+			}
+
+			function checkForMatch() {
+			  var image_urls = [];
+			  $(".card.show img").each(function() {
+				image_urls.push($(this).attr('src'));
+			  });
+			  setTimeout(function() {
+				if (image_urls[0] == image_urls[1]) {
+					alert('You found a match!!');
+					matches_made++;
+					matches_remaining--;
+					updateDisplay();
+					checkEndOfGame();
+					$(".card.show img").addClass('match');
+				} else {
+				  alert('no match');
+				}
+				turnAllUnmatchedCardsFaceDown();
+				},100);
+			}
+
+			function checkForEndOfGame() {
+				if (matches_remaining == 0) {
+				alert("GAME OVER YOU WIN!");
+			  }
+			}
+
+			function countNumCardsFlipped() {
+				return $(".card.show").length;
+			}
+
+			function turnAllCardsFaceDown() {
+				$('.card').removeClass('show');
+				$('.card img').removeClass('match');
+			}
+
+			function turnAllUnmatchedCardsFaceDown() {
+				$('.card').removeClass('show');
+			}
+
+			function flipOneCard($card) {
+				// if the card has the "show" class, remove it
+				// if the card doesn't have the "show" class add it. (toggle)
+				$card.toggleClass('show');
+			}
+
+			function shuffleCards() {
+				var all_images = [
+					'http://weknowyourdreams.com/images/monkey/monkey-03.jpg',
+					'http://kids.nationalgeographic.com/content/dam/kids/photos/animals/Mammals/A-G/giraffe-baby.jpg',
+					'https://upload.wikimedia.org/wikipedia/commons/6/63/African_elephant_warning_raised_trunk.jpg',
+					'http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,fl_progressive,h_1200,q_90,w_2000/v1/178274/The-best-top-desktop-lion-wallpapers-hd-lion-wallpaper-11_xjbx08.jpg',
+					'http://www.rapbasement.com/wp-content/uploads/2014/01/beyonce.jpg',
+					'https://tctechcrunch2011.files.wordpress.com/2015/06/giordano.jpg',
+					'https://www.breakingbelizenews.com/wp-content/uploads/2016/03/donald-bb-trump.jpg',
+					'http://www.zerohedge.com/sites/default/files/images/user5/imageroot/sanders%20teaser%202.jpg',
+				
+					'http://weknowyourdreams.com/images/monkey/monkey-03.jpg',
+					'http://kids.nationalgeographic.com/content/dam/kids/photos/animals/Mammals/A-G/giraffe-baby.jpg',
+					'https://upload.wikimedia.org/wikipedia/commons/6/63/African_elephant_warning_raised_trunk.jpg',
+					'http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,fl_progressive,h_1200,q_90,w_2000/v1/178274/The-best-top-desktop-lion-wallpapers-hd-lion-wallpaper-11_xjbx08.jpg',
+					'http://www.rapbasement.com/wp-content/uploads/2014/01/beyonce.jpg',
+					'https://tctechcrunch2011.files.wordpress.com/2015/06/giordano.jpg',
+					'https://www.breakingbelizenews.com/wp-content/uploads/2016/03/donald-bb-trump.jpg',
+					'http://www.zerohedge.com/sites/default/files/images/user5/imageroot/sanders%20teaser%202.jpg',
+					'http://www.tommyeats.com/.a/6a00d8345173e969e2013480b79f7d970c-320wi',
+					'http://www.tommyeats.com/.a/6a00d8345173e969e2013480b79f7d970c-320wi',
+					'http://texasbeerbus.com/wp-content/uploads/2016/06/bar-1-1.jpg',
+					'http://texasbeerbus.com/wp-content/uploads/2016/06/bar-1-1.jpg',
+				];
+
+				shuffleArray(all_images);
+				$('.card img').each(function() {
+					$(this).attr('src', all_images.pop());
+				});
+			}
+
+			function turnAllCardsFaceUp() {
+				$('.card').addClass('show');
+			}
+
+			function shuffleArray(a) {
+				for (let i = a.length; i; i--) {
+					let j = Math.floor(Math.random() * i);
+					[a[i - 1], a[j]] = [a[j], a[i - 1]];
+				}
+			}
+
+			shuffleCards();
+			turnAllCardsFaceUp();
+        </script>
+
+
+
+    </body>
+
+
+</html>
